@@ -1,8 +1,10 @@
-﻿using Assets.Scripts.Holders;
+﻿using Assets.Scripts.Events;
+using Assets.Scripts.Holders;
 using Assets.Scripts.Map;
 using UnityEngine;
+using Event = Assets.Scripts.Events.Event;
 
-namespace Assets.Scripts.Events.Island
+namespace Events.Island
 {
     public class Island : Event {
         [SerializeField] private GameObject shopUi;
@@ -45,17 +47,17 @@ namespace Assets.Scripts.Events.Island
         }
 
         public override void StartEvent() {
-            Map.Map.Instance.isMapOpenable = false;
+            Assets.Scripts.Map.Map.Instance.isMapOpenable = false;
             textContainer.SetActive(true);
             ShowText();
             Show();
-            Map.Map.Instance.hideShowCanvas(false);
+            Assets.Scripts.Map.Map.Instance.hideShowCanvas(false);
         }
 
         #region Buttons action
 
         public void OnEventRefused() {
-            Map.Map.Instance.hideShowCanvas(true);
+            Assets.Scripts.Map.Map.Instance.hideShowCanvas(true);
             Hide();
         }
 
@@ -77,7 +79,7 @@ namespace Assets.Scripts.Events.Island
         }
 
         public void LeaveIsland() {
-            Map.Map.Instance.isMapOpenable = true;
+            Assets.Scripts.Map.Map.Instance.isMapOpenable = true;
             activeScreen = canvas;
             OnExitButtonPressed();
         }

@@ -1,13 +1,13 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using UnityEngine;
 
-public class CannonBall : MonoBehaviour {
-    [SerializeField] private float speed = default;
-
-    public IEnumerator move() {
-        while (true) {
-            transform.Translate(Vector3.up * Time.deltaTime * speed, Space.Self);
-            yield return null;
+namespace Ship {
+    public class CannonBall : MonoBehaviour {
+        public IEnumerator Move(float speed) {
+            while (true) {
+                transform.Translate(Vector3.up * Time.deltaTime * speed, Space.Self);
+                yield return null;
+            }
         }
     }
 }

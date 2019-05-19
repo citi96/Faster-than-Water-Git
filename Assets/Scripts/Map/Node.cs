@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Assets.Scripts.Events.Island;
+using Events.Island;
 using UnityEngine;
 using UnityEngine.UI;
 using Event = Assets.Scripts.Events.Event;

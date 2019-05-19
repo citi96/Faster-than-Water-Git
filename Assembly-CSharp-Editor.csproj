@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{255B08F3-B5D2-B755-7E4C-BCA3232238E4}</ProjectGuid>
+    <ProjectGuid>{C43859C8-5B0A-054A-A73B-5EBC7D2A76E4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp-Editor</AssemblyName>
@@ -59,19 +59,19 @@
      <Compile Include="Assets\Rotary Heart\SerializableDictionary\Editor\PreferencesWindow.cs" />
      <Compile Include="Assets\Rotary Heart\SerializableDictionary\Editor\SupportWindow.cs" />
  <Reference Include="Unity.TextMeshPro.Editor">
- <HintPath>D:/Francesco/Documents/UnityProjects/Faster than Water/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+ <HintPath>D:/Francesco/Documents/UnityProjects/Faster than Water Git/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.PackageManagerUI.Editor">
- <HintPath>D:/Francesco/Documents/UnityProjects/Faster than Water/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
+ <HintPath>D:/Francesco/Documents/UnityProjects/Faster than Water Git/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.CollabProxy.Editor">
- <HintPath>D:/Francesco/Documents/UnityProjects/Faster than Water/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
+ <HintPath>D:/Francesco/Documents/UnityProjects/Faster than Water Git/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.TextMeshPro">
- <HintPath>D:/Francesco/Documents/UnityProjects/Faster than Water/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+ <HintPath>D:/Francesco/Documents/UnityProjects/Faster than Water Git/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Analytics.DataPrivacy">
- <HintPath>D:/Francesco/Documents/UnityProjects/Faster than Water/Library/ScriptAssemblies/Unity.Analytics.DataPrivacy.dll</HintPath>
+ <HintPath>D:/Francesco/Documents/UnityProjects/Faster than Water Git/Library/ScriptAssemblies/Unity.Analytics.DataPrivacy.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.AIModule">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2018.3.5f1/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
@@ -305,22 +305,22 @@
  <HintPath>C:/Program Files/Unity/Hub/Editor/2018.3.5f1/Editor/Data/PlaybackEngines/windowsstandalonesupport/UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
  </Reference>
  <Reference Include="Pathfinding.Ionic.Zip.Reduced">
- <HintPath>D:/Francesco/Documents/UnityProjects/Faster than Water/Assets/Scripts/AstarPathfindingProject/Plugins/DotNetZip/Pathfinding.Ionic.Zip.Reduced.dll</HintPath>
+ <HintPath>D:/Francesco/Documents/UnityProjects/Faster than Water Git/Assets/Scripts/AstarPathfindingProject/Plugins/DotNetZip/Pathfinding.Ionic.Zip.Reduced.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.Advertisements">
- <HintPath>D:/Francesco/Documents/UnityProjects/Faster than Water/Library/PackageCache/com.unity.ads@2.0.8/Editor/UnityEditor.Advertisements.dll</HintPath>
+ <HintPath>D:/Francesco/Documents/UnityProjects/Faster than Water Git/Library/PackageCache/com.unity.ads@2.0.8/Editor/UnityEditor.Advertisements.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Analytics.Editor">
- <HintPath>D:/Francesco/Documents/UnityProjects/Faster than Water/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Editor.dll</HintPath>
+ <HintPath>D:/Francesco/Documents/UnityProjects/Faster than Water Git/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Analytics.StandardEvents">
- <HintPath>D:/Francesco/Documents/UnityProjects/Faster than Water/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.StandardEvents.dll</HintPath>
+ <HintPath>D:/Francesco/Documents/UnityProjects/Faster than Water Git/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.StandardEvents.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Analytics.Tracker">
- <HintPath>D:/Francesco/Documents/UnityProjects/Faster than Water/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Tracker.dll</HintPath>
+ <HintPath>D:/Francesco/Documents/UnityProjects/Faster than Water Git/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Tracker.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.Purchasing">
- <HintPath>D:/Francesco/Documents/UnityProjects/Faster than Water/Library/PackageCache/com.unity.purchasing@2.0.3/Editor/UnityEditor.Purchasing.dll</HintPath>
+ <HintPath>D:/Francesco/Documents/UnityProjects/Faster than Water Git/Library/PackageCache/com.unity.purchasing@2.0.3/Editor/UnityEditor.Purchasing.dll</HintPath>
  </Reference>
  <Reference Include="mscorlib">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2018.3.5f1/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll</HintPath>
@@ -679,13 +679,13 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Assembly-CSharp.csproj">
-      <Project>{C40D9583-21C5-A2F0-FFC9-A2A64C125CF8}</Project>      <Name>Assembly-CSharp</Name>    </ProjectReference>
+      <Project>{BA63A542-75D6-97D4-4EB6-E343C9511ED6}</Project>      <Name>Assembly-CSharp</Name>    </ProjectReference>
     <ProjectReference Include="AstarPathfindingProject.csproj">
-      <Project>{B4E02D1B-8D43-6C38-3979-58E6DCAE7E0F}</Project>      <Name>AstarPathfindingProject</Name>    </ProjectReference>
+      <Project>{9C04583C-EC7A-5C1C-EF4F-F9FAE1E53ACA}</Project>      <Name>AstarPathfindingProject</Name>    </ProjectReference>
     <ProjectReference Include="PackageToolsEditor.csproj">
-      <Project>{A46C68E2-E4A3-75D2-EFB2-F7B34CB77A24}</Project>      <Name>PackageToolsEditor</Name>    </ProjectReference>
+      <Project>{826FA359-6318-27A1-829E-92DB7C21269B}</Project>      <Name>PackageToolsEditor</Name>    </ProjectReference>
     <ProjectReference Include="AstarPathfindingProjectEditor.csproj">
-      <Project>{33455176-B037-D224-943F-8CB572E63ABF}</Project>      <Name>AstarPathfindingProjectEditor</Name>    </ProjectReference>
+      <Project>{7CCA79C2-3D33-7C5F-63DA-16CB2627D403}</Project>      <Name>AstarPathfindingProjectEditor</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

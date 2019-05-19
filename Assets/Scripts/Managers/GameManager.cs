@@ -1,23 +1,26 @@
-﻿using Pathfinding;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Assets.Scripts;
+using Pathfinding;
+using Ship;
 using UnityEngine;
 
-namespace Assets.Scripts.Managers
-{
+namespace Managers {
     public class GameManager : MonoBehaviour {
         public static GameManager instance { get; private set; }
         public Pirate selectedPlayer { get; private set; }
 
         private SpriteRenderer spriteRenderer;
-        private Ship ship;
+        private ShipObject ship;
 
         private void Awake() {
             instance = this;
-            ship = GameObject.FindGameObjectWithTag("Ship").GetComponent<Ship>();
+            ship = GameObject.FindGameObjectWithTag("Ship").GetComponent<ShipObject>();
         }
 
         private void Update() {
-            if (!Map.Map.Instance.isCanvasActive()) {
+            if (!Assets.Scripts.Map.Map.Instance.isCanvasActive()) {
                 if (Input.GetMouseButtonDown(0)) {
                     FindClickedObject();
                 }
@@ -30,10 +33,10 @@ namespace Assets.Scripts.Managers
                     AstarPath.active.Scan();
                 }
 
-                if (Input.GetKeyDown(KeyCode.UpArrow) && ship.CurrentFloor != Ship.Floor.Upper) {
-                    ship.CurrentFloor = Ship.Floor.Upper;
-                } else if (Input.GetKeyDown(KeyCode.DownArrow) && ship.CurrentFloor != Ship.Floor.Lower) {
-                    ship.CurrentFloor = Ship.Floor.Lower;
+                if (Input.GetKeyDown(KeyCode.UpArrow) && ship.CurrentFloor != ShipObject.Floor.Upper) {
+                    ship.CurrentFloor = ShipObject.Floor.Upper;
+                } else if (Input.GetKeyDown(KeyCode.DownArrow) && ship.CurrentFloor != ShipObject.Floor.Lower) {
+                    ship.CurrentFloor = ShipObject.Floor.Lower;
                 }
             }
         }
@@ -49,12 +52,15 @@ namespace Assets.Scripts.Managers
 
                     SelectPlayer(hit);
                 } else if (selectedPlayer != null && hit.collider.gameObject.layer == 9) {
-                    var graph = hit.collider.gameObject.CompareTag("Upper Floor")
-                        ? selectedPlayer.graphs[0]
-                        : selectedPlayer.graphs[1];
+                    int index = hit.collider.gameObject.CompareTag("Upper Floor")
+                        ? 0
+                        : 1;
+
+                    var graph = selectedPlayer.graphs[index];
+                    var stairs = ship.Stairs.First(s => (int) s.Floor == Math.Abs(index - 1));
 
                     if (!graph.Equals(selectedPlayer.CurrentGraph)) {
-                        MoveToStairs(ship.Stairs);
+                        MoveToStairs(stairs);
                         selectedPlayer.QueuedDestination.Enqueue(
                             new KeyValuePair<Vector3, GraphMask>(Camera.main.ScreenToWorldPoint(Input.mousePosition),
                                 graph));
@@ -62,7 +68,7 @@ namespace Assets.Scripts.Managers
                         selectedPlayer.Move(Camera.main.ScreenToWorldPoint(Input.mousePosition), graph);
                     }
                 } else if (selectedPlayer != null && hit.collider.gameObject.layer == 11) {
-                    MoveToCannon(hit.collider.gameObject.GetComponent<Cannon>());
+                    MoveToCannon(hit.collider.gameObject.GetComponent<CannonObject>());
                 } else if (selectedPlayer != null && hit.collider.gameObject.layer == 14) {
                     MoveToStairs(hit.collider.gameObject.GetComponent<Stairs>());
                 }
@@ -70,9 +76,7 @@ namespace Assets.Scripts.Managers
         }
 
         private void MoveToStairs(Stairs stairs) {
-            if (selectedPlayer.CurrentGraph == selectedPlayer.graphs[0]) {
-                selectedPlayer.Move(stairs.StairsSpot.position, selectedPlayer.CurrentGraph);
-            }
+            selectedPlayer.Move(stairs.StairsSpot.position, selectedPlayer.CurrentGraph);
         }
 
         private void DeselectPlayer() {
@@ -80,7 +84,7 @@ namespace Assets.Scripts.Managers
             selectedPlayer = null;
         }
 
-        private void MoveToCannon(Cannon cannon) {
+        private void MoveToCannon(CannonObject cannon) {
             if (!cannon.IsBusy) {
                 cannon.Pirate = selectedPlayer;
                 selectedPlayer.Move(cannon.PiratePosts.position, selectedPlayer.CurrentGraph);

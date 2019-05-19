@@ -1,10 +1,11 @@
-﻿using Assets.Scripts.Items;
+﻿using System.Collections.Generic;
+using Items;
 
-namespace Assets.Scripts.Events.Island
+namespace Events.Island
 {
     public class Shop {
         private int height;
-        private IItem pool;
+        private List<IItem> pool;
 
         public Shop(int height) {
             this.height = height;

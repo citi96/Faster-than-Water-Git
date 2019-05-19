@@ -1,10 +1,11 @@
-﻿using Pathfinding;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
+using Pathfinding;
+using Ship;
 using UnityEngine;
 
 public class Pirate : AIPath {
-    private Ship ship;
+    private ShipObject ship;
     private static readonly int IsMoving = Animator.StringToHash("isMoving");
 
     public GraphMask[] graphs { get; private set; }
@@ -18,7 +19,7 @@ public class Pirate : AIPath {
             GraphMask.FromGraphName("Lower Floor")
         };
         CurrentGraph = graphs[0];
-        ship = GameObject.FindGameObjectWithTag("Ship").GetComponent<Ship>();
+        ship = GameObject.FindGameObjectWithTag("Ship").GetComponent<ShipObject>();
         QueuedDestination = new Queue<KeyValuePair<Vector3, GraphMask>>();
     }
 
@@ -36,24 +37,24 @@ public class Pirate : AIPath {
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
-        if (collision.gameObject.GetComponentInParent<Cannon>() != null) {
-            var cannon = collision.gameObject.GetComponentInParent<Cannon>();
+        if (collision.gameObject.GetComponentInParent<CannonObject>() != null) {
+            var cannon = collision.gameObject.GetComponentInParent<CannonObject>();
             if (cannon.IsRequestedPirate(this) && !cannon.IsBusy) {
                 StartCoroutine(WaitDestinationBeforeRotation(cannon.transform.rotation));
                 cannon.IsBusy = true;
             }
         } else if (collision.transform.parent.gameObject.GetComponent<Stairs>() != null) {
             var stairs = collision.gameObject.GetComponentInParent<Stairs>();
-            if (stairs.Floor == Ship.Floor.Lower && CurrentGraph == graphs[1] ||
-                stairs.Floor == Ship.Floor.Upper && CurrentGraph == graphs[0]) {
+            if (stairs.Floor == ShipObject.Floor.Lower && CurrentGraph == graphs[1] ||
+                stairs.Floor == ShipObject.Floor.Upper && CurrentGraph == graphs[0]) {
                 ship.PirateChangeFloor(this, stairs.Floor);
             }
         }
     }
 
     private void OnTriggerExit2D(Collider2D collision) {
-        if (collision.gameObject.GetComponentInParent<Cannon>() != null) {
-            var cannon = collision.gameObject.GetComponentInParent<Cannon>();
+        if (collision.gameObject.GetComponentInParent<CannonObject>() != null) {
+            var cannon = collision.gameObject.GetComponentInParent<CannonObject>();
             if (cannon.IsRequestedPirate(this)) {
                 cannon.Pirate = null;
                 cannon.IsBusy = false;
@@ -69,7 +70,7 @@ public class Pirate : AIPath {
 
         print(Mathf.Abs(Quaternion.Dot(transform.rotation, cannonRotation)));
 
-        while (Mathf.Abs(Quaternion.Dot(transform.rotation, cannonRotation)) < 0.99999f) {
+        while (Mathf.Abs(Quaternion.Dot(transform.rotation, cannonRotation)) < 0.9f) {
             transform.rotation = Quaternion.RotateTowards(transform.rotation, cannonRotation, 10f);
             yield return null;
         }

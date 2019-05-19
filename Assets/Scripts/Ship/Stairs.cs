@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 
-public class Stairs : MonoBehaviour {
-    [SerializeField] private Transform stairsSpot;
-    [SerializeField] private Ship.Floor floor;
+namespace Ship {
+    public class Stairs : MonoBehaviour {
+        [SerializeField] private Transform stairsSpot;
+        [SerializeField] private ShipObject.Floor floor;
          
-    public Transform StairsSpot => stairsSpot;
+        public Transform StairsSpot => stairsSpot;
 
-    public Ship.Floor Floor => floor;
+        public ShipObject.Floor Floor => floor;
+    }
 }
