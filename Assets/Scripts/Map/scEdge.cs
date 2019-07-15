@@ -1,4 +1,4 @@
-﻿using Assets.Scripts.Map;
+﻿using Map;
 using UnityEngine;
 public class scEdge {
 
@@ -79,11 +79,11 @@ public class scEdge {
 	}
 
     public void setupNode() {
-        if (!node0.getParentCell().GetComponent<Node>().neighbours.Contains(node1.getParentCell().GetComponent<Node>())) {
-            node0.getParentCell().GetComponent<Node>().addNeighbour(node1.getParentCell().GetComponent<Node>());
+        if (!node0.getParentCell().GetComponent<Node>().Neighbors.Contains(node1.getParentCell().GetComponent<Node>())) {
+            node0.getParentCell().GetComponent<Node>().AddNeighbor(node1.getParentCell().GetComponent<Node>());
         }
-        if (!node1.getParentCell().GetComponent<Node>().neighbours.Contains(node0.getParentCell().GetComponent<Node>())) {
-            node1.getParentCell().GetComponent<Node>().addNeighbour(node0.getParentCell().GetComponent<Node>());
+        if (!node1.getParentCell().GetComponent<Node>().Neighbors.Contains(node0.getParentCell().GetComponent<Node>())) {
+            node1.getParentCell().GetComponent<Node>().AddNeighbor(node0.getParentCell().GetComponent<Node>());
         }
     }
 }

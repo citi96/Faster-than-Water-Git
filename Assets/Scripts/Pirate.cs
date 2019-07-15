@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Managers;
 using Pathfinding;
 using Ship;
 using UnityEngine;
@@ -7,23 +8,24 @@ using UnityEngine;
 public class Pirate : AIPath {
     private ShipObject ship;
     private static readonly int IsMoving = Animator.StringToHash("isMoving");
+    private GameManager gameManager;
 
-    public GraphMask[] graphs { get; private set; }
     public GraphMask CurrentGraph { get; set; }
     public Queue<KeyValuePair<Vector3, GraphMask>> QueuedDestination { get; private set; }
 
-    protected override void Awake() {
-        base.Awake();
-        graphs = new GraphMask[2] {
-            GraphMask.FromGraphName("Upper Floor"),
-            GraphMask.FromGraphName("Lower Floor")
-        };
-        CurrentGraph = graphs[0];
+    protected override void Start() {
+        base.Start();
+        gameManager = GameManager.Instance;
+        CurrentGraph = gameManager.Graphs[0];
         ship = GameObject.FindGameObjectWithTag("Ship").GetComponent<ShipObject>();
         QueuedDestination = new Queue<KeyValuePair<Vector3, GraphMask>>();
     }
 
     public override void OnTargetReached() {
+        path?.Release(this);
+        path = null;
+        interpolator.SetPath(null);
+
         GetComponent<Animator>().SetBool(IsMoving, false);
         if (QueuedDestination.Count > 0) {
             Move(QueuedDestination.Dequeue());
@@ -45,8 +47,8 @@ public class Pirate : AIPath {
             }
         } else if (collision.transform.parent.gameObject.GetComponent<Stairs>() != null) {
             var stairs = collision.gameObject.GetComponentInParent<Stairs>();
-            if (stairs.Floor == ShipObject.Floor.Lower && CurrentGraph == graphs[1] ||
-                stairs.Floor == ShipObject.Floor.Upper && CurrentGraph == graphs[0]) {
+            if (stairs.Floor == ShipObject.Floor.Lower && CurrentGraph == gameManager.Graphs[1] ||
+                stairs.Floor == ShipObject.Floor.Upper && CurrentGraph == gameManager.Graphs[0]) {
                 ship.PirateChangeFloor(this, stairs.Floor);
             }
         }

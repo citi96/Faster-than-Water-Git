@@ -1,34 +1,48 @@
-﻿using Assets.Scripts.Map;
+﻿using Holders;
+using Managers;
+using Map;
+using Ship;
 
-namespace Assets.Scripts.Events
-{
+namespace Events {
     public class PiratesEvent : EnemyEvent {
         public override void AssignQuest(IQuest quest) {
-            throw new System.NotImplementedException();
+            Quest = quest;
         }
 
         public override bool CanEndQuest(IQuest quest) {
-            throw new System.NotImplementedException();
+            return Quest.GetQuestType() == QuestType.Sea;
         }
 
         public override bool CanStartQuest(bool hasMapScreenQuests) {
-            throw new System.NotImplementedException();
+            return false;
         }
 
         public override void InstantiateEventOnScreen(Node node) {
-            throw new System.NotImplementedException();
-        }
-
-        public override void OnEventAccepted() {
-            throw new System.NotImplementedException();
+            Node = node;
         }
 
         public override void StartEvent() {
-            throw new System.NotImplementedException();
+            textContainer.SetActive(true);
+            ShowText();
+            Show();
+            Map.Map.Instance.HideShowMapUi(false);
+
+            var ship = Instantiate(enemyObject).GetComponent<ShipObject>();
+            ship.Side = side;
+            GameManager.Instance.EnemyShip = ship;
         }
 
         protected override void ShowText() {
-            throw new System.NotImplementedException();
+            text.text = "An enemy ship appears by the reef! \nThe fight is inevitable!";
         }
+
+        #region Buttons action
+
+        public override void OnEventAccepted() {
+            base.OnEventAccepted();
+            textContainer.SetActive(false);
+        }
+
+        #endregion
     }
 }

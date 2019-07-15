@@ -1,100 +1,103 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Assets.Scripts;
+﻿using Holders;
+using Managers.States;
 using Pathfinding;
 using Ship;
+using System.Collections;
 using UnityEngine;
 
 namespace Managers {
+    /// <inheritdoc />
+    /// <summary>
+    /// The active manager during the game play.
+    /// </summary>
     public class GameManager : MonoBehaviour {
-        public static GameManager instance { get; private set; }
-        public Pirate selectedPlayer { get; private set; }
+        [SerializeField] private GameObject battleUI;
 
-        private SpriteRenderer spriteRenderer;
-        private ShipObject ship;
+        private ShipObject enemyShip;
+        private GameState gameState;
+        private State state;
+
+
+        public State State {
+            get => state;
+            set {
+                if (value == null) {
+                    value = FindCurrentState();
+                }
+
+                state = value;
+            }
+        }
+
+        public ShipObject Ship { get; private set; }
+
+        /// <summary>
+        /// Getter for the only active instance of the GameManager.
+        /// </summary>
+        public static GameManager Instance { get; private set; }
+
+        /// <summary>
+        /// Return all the GraphMasks in the game scene inside an array.
+        /// Graphs[0] = UpperFloor
+        /// Graphs[1] = LowerFloor
+        /// </summary>
+        public GraphMask[] Graphs { get; private set; }
+
+        /// <summary>
+        /// Currently selected player
+        /// </summary>
+        public Pirate SelectedPirate { get; set; }
+
+        /// <summary>
+        /// The enemy ship. Null when not in combat. It also set the ship side according
+        /// to the EnemyEvent side before the begin of the event.
+        /// Eventually it shows and hides the battle ui.
+        /// </summary>
+        public ShipObject EnemyShip {
+            get => enemyShip;
+            set {
+                enemyShip = value;
+                Ship.Side = enemyShip.Side == EnemySide.Left ? EnemySide.Right : EnemySide.Left;
+                StartCoroutine(ScanGraph());
+
+                ShowBattleUI(value != null);
+            }
+        }
+
+        private void ShowBattleUI(bool active) {
+            battleUI.SetActive(active);
+        }
 
         private void Awake() {
-            instance = this;
-            ship = GameObject.FindGameObjectWithTag("Ship").GetComponent<ShipObject>();
+            if (Instance == null) {
+                Instance = this;
+            } else {
+                Destroy(this);
+            }
+
+            gameState = new GameState();
+            State = gameState;
+            Ship = GameObject.FindGameObjectWithTag("Ship").GetComponent<ShipObject>();
+            Ship.InitShip(20);
+            Graphs = new[] {
+                GraphMask.FromGraphName("Upper Floor"),
+                GraphMask.FromGraphName("Lower Floor")
+            };
         }
 
         private void Update() {
-            if (!Assets.Scripts.Map.Map.Instance.isCanvasActive()) {
-                if (Input.GetMouseButtonDown(0)) {
-                    FindClickedObject();
-                }
+            State.Tick();
 
-                if (Input.GetKeyDown(KeyCode.Escape) && selectedPlayer != null) {
-                    DeselectPlayer();
-                }
-
-                if (Input.GetKeyDown(KeyCode.Space)) {
-                    AstarPath.active.Scan();
-                }
-
-                if (Input.GetKeyDown(KeyCode.UpArrow) && ship.CurrentFloor != ShipObject.Floor.Upper) {
-                    ship.CurrentFloor = ShipObject.Floor.Upper;
-                } else if (Input.GetKeyDown(KeyCode.DownArrow) && ship.CurrentFloor != ShipObject.Floor.Lower) {
-                    ship.CurrentFloor = ShipObject.Floor.Lower;
-                }
-            }
+            if (!Map.Map.Instance.IsMapUiActive()) { }
         }
 
-        private void FindClickedObject() {
-            if (Camera.main != null) {
-                var ray = new Ray(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector3.forward);
-                var hit = Physics2D.GetRayIntersection(ray);
-                if (hit.collider.gameObject.CompareTag("Player")) {
-                    if (selectedPlayer != null) {
-                        DeselectPlayer();
-                    }
-
-                    SelectPlayer(hit);
-                } else if (selectedPlayer != null && hit.collider.gameObject.layer == 9) {
-                    int index = hit.collider.gameObject.CompareTag("Upper Floor")
-                        ? 0
-                        : 1;
-
-                    var graph = selectedPlayer.graphs[index];
-                    var stairs = ship.Stairs.First(s => (int) s.Floor == Math.Abs(index - 1));
-
-                    if (!graph.Equals(selectedPlayer.CurrentGraph)) {
-                        MoveToStairs(stairs);
-                        selectedPlayer.QueuedDestination.Enqueue(
-                            new KeyValuePair<Vector3, GraphMask>(Camera.main.ScreenToWorldPoint(Input.mousePosition),
-                                graph));
-                    } else {
-                        selectedPlayer.Move(Camera.main.ScreenToWorldPoint(Input.mousePosition), graph);
-                    }
-                } else if (selectedPlayer != null && hit.collider.gameObject.layer == 11) {
-                    MoveToCannon(hit.collider.gameObject.GetComponent<CannonObject>());
-                } else if (selectedPlayer != null && hit.collider.gameObject.layer == 14) {
-                    MoveToStairs(hit.collider.gameObject.GetComponent<Stairs>());
-                }
-            }
+        private static IEnumerator ScanGraph() {
+            yield return new WaitForSecondsRealtime(0.1f);
+            AstarPath.active.Scan();
         }
 
-        private void MoveToStairs(Stairs stairs) {
-            selectedPlayer.Move(stairs.StairsSpot.position, selectedPlayer.CurrentGraph);
-        }
-
-        private void DeselectPlayer() {
-            spriteRenderer.color = Color.white;
-            selectedPlayer = null;
-        }
-
-        private void MoveToCannon(CannonObject cannon) {
-            if (!cannon.IsBusy) {
-                cannon.Pirate = selectedPlayer;
-                selectedPlayer.Move(cannon.PiratePosts.position, selectedPlayer.CurrentGraph);
-            }
-        }
-
-        private void SelectPlayer(RaycastHit2D hit) {
-            selectedPlayer = hit.collider.gameObject.GetComponent<Pirate>();
-            spriteRenderer = selectedPlayer.gameObject.GetComponent<SpriteRenderer>();
-            spriteRenderer.color = Color.red;
+        private State FindCurrentState() {
+            return gameState;
         }
     }
 }

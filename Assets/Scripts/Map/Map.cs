@@ -1,120 +1,114 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Managers;
+using Managers.States;
 using UnityEngine;
 
-namespace Assets.Scripts.Map {
+namespace Map {
     public class Map : MonoBehaviour {
-        [SerializeField] private GameObject canvas;
+        [SerializeField] private GameObject mapUI;
         [SerializeField] private GameObject[] island;
         [SerializeField] private GameObject[] enemyShip;
-        private Node currentNode;
-        private int difficulty = 0;
 
-        public bool isMapOpenable { private get; set; } = true;
+        private State state;
+
+        public int Difficulty { get; private set; }
         public static Map Instance { get; private set; }
-        public List<Node> nodes { private set; get; }
-        public Node CurrentNode { private get => currentNode; set => currentNode = value; }
+        public List<Node> Nodes { private set; get; }
+        public Node CurrentNode { get; set; }
 
-        void Awake() {
+        private void Awake() {
             if (Instance == null) {
                 Instance = this;
+                state = new MapState();
             } else {
                 Destroy(this);
             }
-
-            nodes = new List<Node>();
+            Nodes = new List<Node>();
+            Difficulty = 0;
         }
 
-        public void setup() {
-            canvas.SetActive(false);
-            Debug.Log(nodes.Count);
+        public void Setup() {
+            mapUI.SetActive(false);
+            Debug.Log(Nodes.Count);
 
-            setStartingNode();
-            selectionSort();
-            nodes[nodes.Count - 1].IsBossRoom = true;
-            drawDots();
-            hideNodesAndConnections();
-            showCurrentNodePaths();
+            SetStartingNode();
+            Nodes = Nodes.OrderBy(n => n.Height).ToList();
+            Nodes[Nodes.Count - 1].IsBossRoom = true;
+            DrawDots();
+            HideNodesAndConnections();
+            ShowCurrentNodePaths();
 
-            setUpIslands();
+            SetUpIslands();
+            SetUpPirates();
         }
 
-        private void hideNodesAndConnections() {
-            foreach (Node n in nodes) {
-                foreach (Node neighbour in n.neighbours) {
-                    if (n.GetHeight() < neighbour.GetHeight()) {
-                        neighbour.setActive(false);
+        /// <summary>
+        /// Change map visibility according to the active parameter and change the state accordingly.
+        /// </summary>
+        /// <param name="active">Parameter used inside the SetActive method.</param>
+        public void HideShowMapUi(bool active) {
+            mapUI.SetActive(active);
+
+            GameManager.Instance.State = active ? state : null;
+        }
+
+        public bool IsMapUiActive() {
+            return mapUI.activeSelf;
+        }
+
+        private void SetStartingNode() {
+            var startingNode = Nodes[Random.Range(0, Nodes.Count)];
+            startingNode.IsStartingNode = true;
+            startingNode.Height = 0;
+            CurrentNode = startingNode;
+        }
+
+        private void DrawDots() {
+            foreach (var n in Nodes) {
+                foreach (var neighbor in n.Neighbors) {
+                    if (n.Height < neighbor.Height) {
+                        n.InstantiateDots(neighbor);
                     }
                 }
             }
         }
 
-        private void showCurrentNodePaths() {
-            currentNode.setActive(true);
-            foreach (Node n in currentNode.neighbours) {
+        private void HideNodesAndConnections() {
+            foreach (var n in Nodes) {
+                foreach (var neighbor in n.Neighbors) {
+                    if (n.Height < neighbor.Height) {
+                        neighbor.SetActive(false);
+                    }
+                }
+            }
+        }
+
+        private void ShowCurrentNodePaths() {
+            CurrentNode.SetActive(true);
+            foreach (var n in CurrentNode.Neighbors) {
                 n.gameObject.SetActive(true);
             }
         }
 
-        private void drawDots() {
-            foreach (Node n in nodes) {
-                foreach (Node neighbour in n.neighbours) {
-                    if (n.GetHeight() < neighbour.GetHeight()) {
-                        n.instantiateDots(neighbour);
-                    }
-                }
-            }
-        }
-
-        private void setUpIslands() {
-            int maxIsland = difficulty > 9 ? 2 : difficulty > 5 ? 3 : difficulty > 3 ? 4 : 5;
+        private void SetUpIslands() {
+            int maxIsland = Difficulty > 9 ? 2 : Difficulty > 5 ? 3 : Difficulty > 3 ? 4 : 5;
 
             while (maxIsland > 0) {
-                Node node = nodes[UnityEngine.Random.Range(0, nodes.Count)];
-                if (node.canBeIsland) {
-                    node.assignIslandEvent(island[0]);
+                var node = Nodes[Random.Range(0, Nodes.Count)];
+                if (node.CanBeIsland) {
+                    node.AssignIslandEvent(island[0]);
                     maxIsland--;
                 }
             }
         }
 
-        private void setStartingNode() {
-            Node startingNode = nodes[UnityEngine.Random.Range(0, nodes.Count)];
-            startingNode.IsStartingNode = true;
-            startingNode.SetHeight(0);
-            CurrentNode = startingNode;
-        }
-
-        private void Update() {
-            if (Input.GetKeyDown(KeyCode.M) && isMapOpenable) {
-                hideShowCanvas(!canvas.activeSelf);
-            }
-        }
-
-        public void hideShowCanvas(bool active) {
-            canvas.SetActive(active);
-        }
-
-        public bool isCanvasActive() {
-            return canvas.activeSelf;
-        }
-
-        private void selectionSort() {
-            int length = nodes.Count;
-
-            for (int i = 0; i < length - 1; i++) {
-
-                for (int j = i + 1; j < length; j++) {
-                    if (nodes[i].GetHeight() > nodes[j].GetHeight())
-                        swap(i, j); // ordine ascendente
+        private void SetUpPirates() {
+            foreach (var node in Nodes) {
+                if (node.Height > 0) {
+                    node.AssignEnemyEvent(enemyShip[0]);
                 }
             }
-        }
-
-        private void swap(int i, int j) {
-            Node tmp = nodes[i];
-            nodes[i] = nodes[j];
-            nodes[j] = tmp;
         }
     }
 }

@@ -10,6 +10,9 @@ TagManager:
   - Upper Floor
   - Lower Floor
   - Ship
+  - Stairs
+  - Keel
+  - Cannon
   layers:
   - Default
   - TransparentFX
@@ -20,13 +23,13 @@ TagManager:
   - 
   - 
   - Unwalkable Upper
-  - Ship 1F
+  - Floor
   - Player
   - Cannon
   - Unwalkable Lower
-  - Ship 2F
-  - Stairs
   - 
+  - Stairs
+  - Keel
   - 
   - 
   - 

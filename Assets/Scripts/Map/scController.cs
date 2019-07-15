@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Assets.Scripts.Map;
+using Map;
 using UnityEngine;
 
 public class scController : MonoBehaviour {
@@ -111,10 +111,12 @@ public class scController : MonoBehaviour {
     private void setRooms() {
         foreach (GameObject aCell in cellList) {
             var cellLocalPosition = aCell.transform.localPosition;
-            scVertexNode thisNode = new scVertexNode(cellLocalPosition.x, cellLocalPosition.y, aCell.gameObject);
+            scVertexNode vertexNode = new scVertexNode(cellLocalPosition.x, cellLocalPosition.y, aCell.gameObject);
             Destroy(aCell.GetComponent<scCell>());
-            roomList.Add(thisNode);
-            Map.Instance.nodes.Add(thisNode.getParentCell().GetComponent<Node>());
+            roomList.Add(vertexNode);
+            var node = vertexNode.getParentCell().GetComponent<Node>();
+            node.Difficulty = Map.Map.Instance.Difficulty;
+            Map.Map.Instance.Nodes.Add(node);
         }
     }
 }

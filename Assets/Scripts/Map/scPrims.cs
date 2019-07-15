@@ -1,5 +1,4 @@
-﻿using Assets.Scripts.Map;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,7 +22,7 @@ public class scPrims {
         }
 
         if (!hasDrawnEdges) {
-            Map.Instance.setup();
+            Map.Map.Instance.Setup();
             hasDrawnEdges = true;
         }
     }

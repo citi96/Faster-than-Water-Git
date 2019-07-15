@@ -1,7 +1,6 @@
-﻿using Assets.Scripts.Holders;
+﻿using Holders;
 
-namespace Assets.Scripts.Events
-{
+namespace Events {
     public interface IQuest {
         QuestType GetQuestType();
     }
